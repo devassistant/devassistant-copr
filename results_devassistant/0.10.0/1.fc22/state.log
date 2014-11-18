@@ -1,0 +1,21 @@
+2014-11-13 17:51:11,652 - Mock Version: 1.1.41
+2014-11-13 17:51:11,656 - Start: unpacking root cache
+2014-11-13 17:51:13,799 - Finish: unpacking root cache
+2014-11-13 17:51:13,800 - Start: cleaning yum metadata
+2014-11-13 17:51:13,825 - Finish: cleaning yum metadata
+2014-11-13 17:51:13,832 - Start: device setup
+2014-11-13 17:51:13,835 - Finish: device setup
+2014-11-13 17:51:13,835 - Start: yum update
+2014-11-13 17:51:38,270 - Finish: yum update
+2014-11-13 17:51:38,702 - Finish: lock buildroot
+2014-11-13 17:51:38,702 - Finish: chroot init
+2014-11-13 17:51:38,763 - Start: build phase for devassistant-0.10.0-1.fc22.src.rpm
+2014-11-13 17:51:38,764 - Start: device setup
+2014-11-13 17:51:38,766 - Finish: device setup
+2014-11-13 17:51:38,798 - Start: build setup for devassistant-0.10.0-1.fc22.src.rpm
+2014-11-13 17:51:45,379 - Finish: build setup for devassistant-0.10.0-1.fc22.src.rpm
+2014-11-13 17:51:45,379 - Start: rpmbuild -bb devassistant-0.10.0-1.fc22.src.rpm
+2014-11-13 17:51:45,906 - Start: lock buildroot
+2014-11-13 17:51:45,906 - Start: clean chroot
+2014-11-13 17:51:46,260 - Finish: clean chroot
+2014-11-13 17:51:46,261 - Finish: lock buildroot
