@@ -15,8 +15,6 @@ Source0:        https://pypi.python.org/packages/source/d/%{name}/%{name}-%{vers
 Source1:        %{name}.desktop
 Source2:        %{name}.appdata.xml
 
-Patch0:         %{name}-alter-paths-for-fedora.patch
-
 BuildArch:      noarch
 
 BuildRequires:  desktop-file-utils
@@ -82,13 +80,6 @@ for SIZE in 16x16 22x22 24x24 32x32 48x48 256x256; do
     mkdir -p %{buildroot}%{_datadir}/icons/HighContrast/$SIZE/apps
     install -p -m 644 icons/HighContrast/$SIZE/%{name}.png %{buildroot}%{_datadir}/icons/HighContrast/$SIZE/apps/%{name}.png
 done
-
-## move data (assistants, snippets, templates) into %%{_datadir}
-# first, do the alterations to paths in devassistant
-pushd %{buildroot}%{python_sitelib}
-patch -p1 < %{PATCH0} -F 3
-sed -i 's|_DATADIR_DEVASSISTANT|%{_datadir}/%{name}|' devassistant/settings.py
-popd
 
 # desktop and appdata
 desktop-file-install --dir %{buildroot}%{_datadir}/applications %{name}.desktop
