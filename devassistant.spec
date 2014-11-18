@@ -23,6 +23,7 @@ BuildRequires:  python2-devel
 BuildRequires:  python-flexmock
 BuildRequires:  python-jinja2
 BuildRequires:  python-progress
+BuildRequires:  python-requests
 BuildRequires:  python-setuptools
 BuildRequires:  python-six
 
@@ -38,6 +39,7 @@ Requires:       pygobject3
 Requires:       python-jinja2
 Requires:       python-progress
 Requires:       python-PyGithub
+Requires:       python-requests
 Requires:       python-setuptools
 Requires:       python-six
 Requires:       PyYAML
