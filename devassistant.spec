@@ -15,7 +15,7 @@ Source0:        https://pypi.python.org/packages/source/d/%{name}/%{name}-%{vers
 Source1:        %{name}.desktop
 Source2:        %{name}.appdata.xml
 
-Patch0:         devassistant-0.6.0-alter-paths-for-fedora.patch
+Patch0:         %{name}-alter-paths-for-fedora.patch
 
 BuildArch:      noarch
 
