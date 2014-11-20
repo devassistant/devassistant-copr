@@ -20,6 +20,8 @@ BuildArch:      noarch
 BuildRequires:  desktop-file-utils
 BuildRequires:  pytest
 BuildRequires:  python2-devel
+BuildRequires:  python-dapp
+BuildRequires:  python-docker-py
 BuildRequires:  python-flexmock
 BuildRequires:  python-jinja2
 BuildRequires:  python-progress
@@ -36,6 +38,8 @@ Requires:       git
 Requires:       openssh-askpass
 Requires:       polkit
 Requires:       pygobject3
+Requires:       python-dapp
+Requires:       python-docker-py
 Requires:       python-jinja2
 Requires:       python-progress
 Requires:       python-PyGithub
