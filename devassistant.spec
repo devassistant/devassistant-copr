@@ -69,6 +69,9 @@ sed -i '/Version/d' %{name}.desktop
 %install
 %{__python} setup.py install --skip-build --root %{buildroot}
 
+# folder for assistants
+mkdir -p %{buildroot}%{_datadir}/%{name}
+
 # manpages
 mkdir -p %{buildroot}%{_mandir}/man1
 install -p -m 644 manpages/%{shortname}.1 %{buildroot}%{_mandir}/man1
