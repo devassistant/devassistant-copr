@@ -15,6 +15,8 @@ Source0:        https://pypi.python.org/packages/source/d/%{name}/%{name}-%{vers
 Source1:        %{name}.desktop
 Source2:        %{name}.appdata.xml
 
+Patch0:         %{name}-test.patch
+
 BuildArch:      noarch
 
 BuildRequires:  desktop-file-utils
@@ -57,6 +59,7 @@ working with source control, etc.
 
 %prep
 %setup -q -n %{name}-%{version}
+%patch0 -p1
 # remove bundled egg-info
 rm -rf %{name}.egg-info
 
@@ -141,6 +144,6 @@ fi
 %{python_sitelib}/%{name}-%{version}-py?.?.egg-info
 
 %changelog
-* Tue Nov 18 2014 Tomas Radej <tradej@redhat.com> - 0.10.0
+* Tue Nov 18 2014 Tomas Radej <tradej@redhat.com> - 0.10.0-1
 - Version 0.10.0
 
