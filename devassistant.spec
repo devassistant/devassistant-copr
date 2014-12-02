@@ -2,7 +2,7 @@
 
 Name:           devassistant
 Version:        0.10.0
-Release:        1%{?dist}
+Release:        2%{?dist}
 Summary:        DevAssistant - Making life easier for developers
 
 License:        GPLv2+ and CC-BY-SA
@@ -20,18 +20,18 @@ Patch0:         %{name}-test.patch
 BuildArch:      noarch
 
 BuildRequires:  desktop-file-utils
-BuildRequires:  pytest
-BuildRequires:  python2-devel
-BuildRequires:  python-dapp
-BuildRequires:  python-docker-py
-BuildRequires:  python-flexmock
-BuildRequires:  python-jinja2
-BuildRequires:  python-progress
-BuildRequires:  python-requests
-BuildRequires:  python-setuptools
-BuildRequires:  python-six
+BuildRequires:  python3-pytest
+BuildRequires:  python3-devel
+BuildRequires:  python3-dapp
+BuildRequires:  python3-docker-py
+BuildRequires:  python3-flexmock
+BuildRequires:  python3-jinja2
+BuildRequires:  python3-progress
+BuildRequires:  python3-requests
+BuildRequires:  python3-setuptools
+BuildRequires:  python3-six
 
-BuildRequires:  PyYAML
+BuildRequires:  python3-PyYAML
 
 # it seems that other packages using bash-completion don't depend
 # on it and rather just own the directory, so we will do the same
@@ -39,16 +39,16 @@ Requires:       git
 # needed to create ssh key for GitHub access, not necessarily installed by default everywhere
 Requires:       openssh-askpass
 Requires:       polkit
-Requires:       pygobject3
-Requires:       python-dapp
-Requires:       python-docker-py
-Requires:       python-jinja2
-Requires:       python-progress
-Requires:       python-PyGithub
-Requires:       python-requests
-Requires:       python-setuptools
-Requires:       python-six
-Requires:       PyYAML
+Requires:       python3-gobject
+Requires:       python3-dapp
+Requires:       python3-docker-py
+Requires:       python3-jinja2
+Requires:       python3-progress
+Requires:       python3-PyGithub
+Requires:       python3-requests
+Requires:       python3-setuptools
+Requires:       python3-six
+Requires:       python3-PyYAML
 
 %global __requires_exclude ^\(/usr/bin/php\|/usr/bin/perl\|perl\\(\)
 
@@ -65,12 +65,13 @@ rm -rf %{name}.egg-info
 
 cp %{SOURCE1} .
 sed -i '/Version/d' %{name}.desktop
+find -name '*.py' | xargs sed -i '1s|^#!python|#!%{__python3}|'
 
 %build
-%{__python} setup.py build
+%{__python3} setup.py build
 
 %install
-%{__python} setup.py install --skip-build --root %{buildroot}
+%{__python3} setup.py install --skip-build --root %{buildroot}
 
 # folder for assistants
 mkdir -p %{buildroot}%{_datadir}/%{name}
@@ -105,7 +106,7 @@ mkdir -p %{buildroot}%{_libexecdir}
 install -p -m 755 polkit/da_auth %{buildroot}%{_libexecdir}
 
 %check
-%{__python} setup.py test -t py.test
+%{__python3} setup.py test -t py.test-%{python3_version}
 
 %post
 /bin/touch --no-create %{_datadir}/icons/hicolor &>/dev/null || :
@@ -140,10 +141,13 @@ fi
 %{_datadir}/polkit-1/actions/%{name}_auth.policy
 %{_libexecdir}/da_auth
 %{_sysconfdir}/bash_completion.d/
-%{python_sitelib}/%{name}
-%{python_sitelib}/%{name}-%{version}-py?.?.egg-info
+%{python3_sitelib}/%{name}
+%{python3_sitelib}/%{name}-%{version}-py?.?.egg-info
 
 %changelog
+* Tue Dec 02 2014 Tomas Radej <tradej@redhat.com> - 0.10.0-2
+- Converted to a Python 3-only package
+
 * Tue Nov 18 2014 Tomas Radej <tradej@redhat.com> - 0.10.0-1
 - Version 0.10.0
 
