@@ -2,7 +2,7 @@
 
 Name:           devassistant
 Version:        0.10.0
-Release:        5%{?dist}
+Release:        6%{?dist}
 Summary:        DevAssistant - Making life easier for developers
 
 License:        GPLv2+ and CC-BY-SA
@@ -33,13 +33,27 @@ BuildRequires:  python3-six
 
 BuildRequires:  python3-PyYAML
 
+Requires:       %{name}-core = %{version}-%{release}
+Requires:       %{name}-gui = %{version}-%{release}
+Requires:       %{name}-cli = %{version}-%{release}
+
+%global __requires_exclude ^\(/usr/bin/php\|/usr/bin/perl\|perl\\(\)
+
+%description
+DevAssistant can help you with creating and setting up basic projects
+in various languages, installing dependencies, setting up environmens,
+working with source control, etc.
+
+This package will install both the command-line and graphical interfaces.
+
+%package core
+Summary:        The core packages of DevAssistant
 # it seems that other packages using bash-completion don't depend
 # on it and rather just own the directory, so we will do the same
 Requires:       git
 # needed to create ssh key for GitHub access, not necessarily installed by default everywhere
 Requires:       openssh-askpass
 Requires:       polkit
-Requires:       python3-gobject
 Requires:       python3-dapp
 Requires:       python3-dnf
 Requires:       python3-docker-py
@@ -51,12 +65,32 @@ Requires:       python3-setuptools
 Requires:       python3-six
 Requires:       python3-PyYAML
 
-%global __requires_exclude ^\(/usr/bin/php\|/usr/bin/perl\|perl\\(\)
+%description core
+This package contains the DevAssistant core files only. To actually run
+DevAssistant, you need also a package that provides devassistant-ui, such as
+devassistant-cli or devassistant-gui.
 
-%description
-DevAssistant can help you with creating and setting up basic projects
-in various languages, installing dependencies, setting up environmens,
-working with source control, etc.
+%package gui
+Summary:        DevAssistant GUI written in GTK+
+Requires:       python3-gobject
+Requires:       python3-six
+Requires:       %{name}-core%{?_isa} = %{version}-%{release}
+
+%description gui
+This package contains the GTK+ GUI for DevAssistant. If you install this
+package, you will get full DevAssistant functionality. The DevAssistant
+command-line UI is provided by the package devassistant-cli.
+
+%package cli
+Summary:        DevAssistant command-line UI
+Requires:       python3-six
+Requires:       %{name}-core%{?_isa} = %{version}-%{release}
+
+%description cli
+This package contains the command-line UI for DevAssistant. If you install this
+package, you will get full DevAssistant functionality. The DevAssistant GTK+
+GUI is provided by the package devassistant-gui.
+
 
 %prep
 %setup -q -n %{name}-%{version}
@@ -109,11 +143,11 @@ install -p -m 755 polkit/da_auth %{buildroot}%{_libexecdir}
 %check
 %{__python3} setup.py test -t py.test-%{python3_version}
 
-%post
+%post gui
 /bin/touch --no-create %{_datadir}/icons/hicolor &>/dev/null || :
 /bin/touch --no-create %{_datadir}/icons/HighContrast &>/dev/null || :
 
-%postun
+%postun gui
 if [ $1 -eq 0 ] ; then
     /bin/touch --no-create %{_datadir}/icons/hicolor &>/dev/null
     /bin/touch --no-create %{_datadir}/icons/HighContrast &>/dev/null
@@ -121,31 +155,47 @@ if [ $1 -eq 0 ] ; then
     /usr/bin/gtk-update-icon-cache %{_datadir}/icons/HighContrast &>/dev/null || :
 fi
 
-%posttrans
+%posttrans gui
 /usr/bin/gtk-update-icon-cache %{_datadir}/icons/hicolor &>/dev/null || :
 
 %files
 %doc README.rst LICENSE
-%{_bindir}/%{shortname}
-%{_bindir}/%{shortname}-gui
-%{_bindir}/%{name}
-%{_bindir}/%{name}-gui
+
+%files core
+%doc README.rst LICENSE
 %{_datadir}/%{name}
-%{_mandir}/man1/%{shortname}.1.gz
-%{_mandir}/man1/%{shortname}-gui.1.gz
-%{_mandir}/man1/%{name}.1.gz
-%{_mandir}/man1/%{name}-gui.1.gz
+%{_datadir}/polkit-1/actions/%{name}_auth.policy
+%{_libexecdir}/da_auth
+%{python3_sitelib}/%{name}
+%exclude %{python3_sitelib}/%{name}/gui
+%exclude %{python3_sitelib}/%{name}/cli
+%{python3_sitelib}/%{name}-%{version}-py?.?.egg-info
+
+%files gui
+%doc README.rst LICENSE
+%{_bindir}/%{name}-gui
+%{_bindir}/%{shortname}-gui
 %{_datadir}/applications/%{name}.desktop
 %{_datadir}/appdata/%{name}.appdata.xml
 %{_datadir}/icons/hicolor/*/apps/%{name}.png
 %{_datadir}/icons/HighContrast/*/apps/%{name}.png
-%{_datadir}/polkit-1/actions/%{name}_auth.policy
-%{_libexecdir}/da_auth
+%{_mandir}/man1/%{name}-gui.1.gz
+%{_mandir}/man1/%{shortname}-gui.1.gz
+%{python3_sitelib}/%{name}/gui
+
+%files cli
+%doc README.rst LICENSE
+%{_bindir}/%{name}
+%{_bindir}/%{shortname}
+%{_mandir}/man1/%{shortname}.1.gz
+%{_mandir}/man1/%{name}.1.gz
 %{_sysconfdir}/bash_completion.d/
-%{python3_sitelib}/%{name}
-%{python3_sitelib}/%{name}-%{version}-py?.?.egg-info
+%{python3_sitelib}/%{name}/cli
 
 %changelog
+* Wed Dec 03 2014 Tomas Radej <tradej@redhat.com> - 0.10.0-6
+- Split into subpackages
+
 * Wed Dec 03 2014 Tomas Radej <tradej@redhat.com> - 0.10.0-5
 - Added python3-dnf dependency
 
