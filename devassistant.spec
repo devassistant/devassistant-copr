@@ -2,7 +2,7 @@
 
 Name:           devassistant
 Version:        0.10.0
-Release:        6%{?dist}
+Release:        7%{?dist}
 Summary:        DevAssistant - Making life easier for developers
 
 License:        GPLv2+ and CC-BY-SA
@@ -74,7 +74,7 @@ devassistant-cli or devassistant-gui.
 Summary:        DevAssistant GUI written in GTK+
 Requires:       python3-gobject
 Requires:       python3-six
-Requires:       %{name}-core%{?_isa} = %{version}-%{release}
+Requires:       %{name}-core = %{version}-%{release}
 Provides:       %{name}-ui = %{version}-%{release}
 
 %description gui
@@ -85,7 +85,7 @@ command-line UI is provided by the package devassistant-cli.
 %package cli
 Summary:        DevAssistant command-line UI
 Requires:       python3-six
-Requires:       %{name}-core%{?_isa} = %{version}-%{release}
+Requires:       %{name}-core = %{version}-%{release}
 Provides:       %{name}-ui = %{version}-%{release}
 
 %description cli
@@ -195,6 +195,9 @@ fi
 %{python3_sitelib}/%{name}/cli
 
 %changelog
+* Wed Dec 03 2014 Tomas Radej <tradej@redhat.com> - 0.10.0-7
+- Correct dependencies in subpackages
+
 * Wed Dec 03 2014 Tomas Radej <tradej@redhat.com> - 0.10.0-6
 - Split into subpackages
 
