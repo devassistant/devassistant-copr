@@ -2,7 +2,7 @@
 
 Name:           devassistant
 Version:        0.10.0
-Release:        2%{?dist}
+Release:        4%{?dist}
 Summary:        DevAssistant - Making life easier for developers
 
 License:        GPLv2+ and CC-BY-SA
@@ -44,7 +44,7 @@ Requires:       python3-dapp
 Requires:       python3-docker-py
 Requires:       python3-jinja2
 Requires:       python3-progress
-Requires:       python3-PyGithub
+Requires:       python3-github
 Requires:       python3-requests
 Requires:       python3-setuptools
 Requires:       python3-six
@@ -65,7 +65,7 @@ rm -rf %{name}.egg-info
 
 cp %{SOURCE1} .
 sed -i '/Version/d' %{name}.desktop
-find -name '*.py' | xargs sed -i '1s|^#!python|#!%{__python3}|'
+find -name '*.py' | xargs sed -i '1s,^#!\(/usr/bin/\|/usr/bin/env \)python,#!%{__python3},'
 
 %build
 %{__python3} setup.py build
@@ -145,6 +145,12 @@ fi
 %{python3_sitelib}/%{name}-%{version}-py?.?.egg-info
 
 %changelog
+* Wed Dec 03 2014 Tomas Radej <tradej@redhat.com> - 0.10.0-4
+- Dep on python3-github
+
+* Wed Dec 03 2014 Tomas Radej <tradej@redhat.com> - 0.10.0-3
+- Correct Python 3 shebang substitution
+
 * Tue Dec 02 2014 Tomas Radej <tradej@redhat.com> - 0.10.0-2
 - Converted to a Python 3-only package
 
