@@ -75,6 +75,7 @@ Summary:        DevAssistant GUI written in GTK+
 Requires:       python3-gobject
 Requires:       python3-six
 Requires:       %{name}-core%{?_isa} = %{version}-%{release}
+Provides:       %{name}-ui = %{version}-%{release}
 
 %description gui
 This package contains the GTK+ GUI for DevAssistant. If you install this
@@ -85,6 +86,7 @@ command-line UI is provided by the package devassistant-cli.
 Summary:        DevAssistant command-line UI
 Requires:       python3-six
 Requires:       %{name}-core%{?_isa} = %{version}-%{release}
+Provides:       %{name}-ui = %{version}-%{release}
 
 %description cli
 This package contains the command-line UI for DevAssistant. If you install this
