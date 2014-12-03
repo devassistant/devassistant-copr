@@ -2,7 +2,7 @@
 
 Name:           devassistant
 Version:        0.10.0
-Release:        4%{?dist}
+Release:        5%{?dist}
 Summary:        DevAssistant - Making life easier for developers
 
 License:        GPLv2+ and CC-BY-SA
@@ -41,6 +41,7 @@ Requires:       openssh-askpass
 Requires:       polkit
 Requires:       python3-gobject
 Requires:       python3-dapp
+Requires:       python3-dnf
 Requires:       python3-docker-py
 Requires:       python3-jinja2
 Requires:       python3-progress
@@ -145,6 +146,9 @@ fi
 %{python3_sitelib}/%{name}-%{version}-py?.?.egg-info
 
 %changelog
+* Wed Dec 03 2014 Tomas Radej <tradej@redhat.com> - 0.10.0-5
+- Added python3-dnf dependency
+
 * Wed Dec 03 2014 Tomas Radej <tradej@redhat.com> - 0.10.0-4
 - Dep on python3-github
 
