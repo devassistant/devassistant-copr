@@ -1,8 +1,11 @@
+# define macrosdir to the old location for EPEL 5 and 6.  Use the new location everywhere else
+%global macrosdir %(d=%{_rpmconfigdir}/macros.d; [ -d $d ] || %d=%{_sysconfdir}/rpm; echo $d)
+
 %global shortname da
 
 Name:           devassistant
-Version:        0.10.0
-Release:        7%{?dist}
+Version:        0.10.1
+Release:        1%{?dist}
 Summary:        DevAssistant - Making life easier for developers
 
 License:        GPLv2+ and CC-BY-SA
@@ -10,12 +13,14 @@ URL:            https://github.com/bkabrda/devassistant
 Source0:        https://pypi.python.org/packages/source/d/%{name}/%{name}-%{version}.tar.gz
 # to get desktop and appdata file:
 # git clone https://github.com/bkabrda/devassistant.git && cd devassistant
-# git checkout v0.10.0
+# git checkout v0.10.1
 # # devassistant.desktop, appdata/devassistant.appdata.xml
 Source1:        %{name}.desktop
 Source2:        %{name}.appdata.xml
+Source3:        %{name}.macros
 
 Patch0:         %{name}-test.patch
+Patch1:         %{name}-pkg-install.patch
 
 BuildArch:      noarch
 
@@ -23,15 +28,16 @@ BuildRequires:  desktop-file-utils
 BuildRequires:  python3-pytest
 BuildRequires:  python3-devel
 BuildRequires:  python3-dapp
-BuildRequires:  python3-docker-py
 BuildRequires:  python3-flexmock
 BuildRequires:  python3-jinja2
 BuildRequires:  python3-progress
 BuildRequires:  python3-requests
 BuildRequires:  python3-setuptools
 BuildRequires:  python3-six
-
 BuildRequires:  python3-PyYAML
+%ifarch x86_64
+BuildRequires:  python3-docker-py
+%endif # arch
 
 Requires:       %{name}-core = %{version}-%{release}
 Requires:       %{name}-gui = %{version}-%{release}
@@ -56,7 +62,6 @@ Requires:       openssh-askpass
 Requires:       polkit
 Requires:       python3-dapp
 Requires:       python3-dnf
-Requires:       python3-docker-py
 Requires:       python3-jinja2
 Requires:       python3-progress
 Requires:       python3-github
@@ -64,6 +69,9 @@ Requires:       python3-requests
 Requires:       python3-setuptools
 Requires:       python3-six
 Requires:       python3-PyYAML
+%ifarch x86_64
+Requires:       python3-docker-py
+%endif # arch
 
 %description core
 This package contains the DevAssistant core files only. To actually run
@@ -93,10 +101,16 @@ This package contains the command-line UI for DevAssistant. If you install this
 package, you will get full DevAssistant functionality. The DevAssistant GTK+
 GUI is provided by the package devassistant-gui.
 
+%package devel
+Summary:        Macros needed for DAP packages distributed via RPM.
+
+%description devel
+Macros needed for DAP packages distributed via RPM.
 
 %prep
 %setup -q -n %{name}-%{version}
 %patch0 -p1
+%patch1 -p1
 # remove bundled egg-info
 rm -rf %{name}.egg-info
 
@@ -141,6 +155,10 @@ mkdir -p %{buildroot}%{_datadir}/polkit-1/actions/
 install -p -m 644 polkit/devassistant_auth.policy %{buildroot}%{_datadir}/polkit-1/actions/
 mkdir -p %{buildroot}%{_libexecdir}
 install -p -m 755 polkit/da_auth %{buildroot}%{_libexecdir}
+
+#macros
+mkdir -p %{buildroot}%{macrosdir}
+cp %{SOURCE3} %{buildroot}%{macrosdir}/macros.%{name}
 
 %check
 %{__python3} setup.py test -t py.test-%{python3_version}
@@ -194,7 +212,16 @@ fi
 %{_sysconfdir}/bash_completion.d/
 %{python3_sitelib}/%{name}/cli
 
+%files devel
+%doc README.rst LICENSE
+%{macrosdir}/macros.%{name}
+
 %changelog
+* Mon Dec 08 2014 Tomas Radej <tradej@redhat.com> - 0.10.1-1
+- Updated to latest upstream version
+- Conditional dependency on python3-docker-py
+- Added devel subpackage
+
 * Wed Dec 03 2014 Tomas Radej <tradej@redhat.com> - 0.10.0-7
 - Correct dependencies in subpackages
 

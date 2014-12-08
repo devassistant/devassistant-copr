@@ -1,0 +1,124 @@
+From cede632849ed60d4893b9de28399d31030f78f84 Mon Sep 17 00:00:00 2001
+From: Tomas Radej <tradej@redhat.com>
+Date: Mon, 8 Dec 2014 17:49:31 +0100
+Subject: [PATCH] Added nodeps option to 'pkg install'
+
+---
+ devassistant/actions.py      |  4 +++-
+ devassistant/dapi/dapicli.py | 21 +++++++++++----------
+ test/dapi/test_dapicli.py    | 17 +++++++++++++++++
+ 3 files changed, 31 insertions(+), 11 deletions(-)
+
+diff --git a/devassistant/actions.py b/devassistant/actions.py
+index 6f5a355..a51ca90 100644
+--- a/devassistant/actions.py
++++ b/devassistant/actions.py
+@@ -270,6 +270,8 @@ class PkgInstallAction(Action):
+         argument.Argument('package', 'package', nargs='+', help='Packages to install'),
+         argument.Argument('force', '-f', '--force', action='store_true', default=False,
+                           help='Install packages that are unsupported on this platform (dangerous)'),
++        argument.Argument('nodeps', '-n', '--no-deps', action='store_true', default=False,
++                          help='Do not install dependencies of the selected package'),
+     ]
+ 
+     @classmethod
+@@ -282,7 +284,7 @@ class PkgInstallAction(Action):
+             else:
+                 method = dapicli.install_dap
+             try:
+-                pkgs = method(pkg, force=kwargs['force'])
++                pkgs = method(pkg, force=kwargs['force'], nodeps=kwargs.get('nodeps', False))
+                 logger.info('Successfully installed DAPs {pkgs}'.format(pkgs=' '.join(pkgs)))
+             except Exception as e:
+                 exs.append(str(e))
+diff --git a/devassistant/dapi/dapicli.py b/devassistant/dapi/dapicli.py
+index 3f34088..7f97722 100644
+--- a/devassistant/dapi/dapicli.py
++++ b/devassistant/dapi/dapicli.py
+@@ -275,7 +275,7 @@ def download_dap(name, version='', d='', directory=''):
+     return path, not bool(directory)
+ 
+ 
+-def install_dap_from_path(path, update=False, first=True, force=False):
++def install_dap_from_path(path, update=False, first=True, force=False, nodeps=False):
+     '''Installs a dap from a given path'''
+     will_uninstall = False
+     dap_obj = dapi.Dap(path)
+@@ -303,13 +303,14 @@ def install_dap_from_path(path, update=False, first=True, force=False):
+                 '{0} is not supported on this platform (use --force to suppress this check)'.
+                 format(dap_obj.meta['package_name']))
+         deps = set()
+-        for dep in dap_obj.meta['dependencies']:
+-            dep = _strip_version_from_dependency(dep)
+-            if dep not in get_installed_daps():
+-                deps |= _get_all_dependencies_of(dep, force=force)
+-        for dep in deps:
+-            if dep not in get_installed_daps():
+-                installed += install_dap(dep, first=False)
++        if not nodeps:
++            for dep in dap_obj.meta['dependencies']:
++                dep = _strip_version_from_dependency(dep)
++                if dep not in get_installed_daps():
++                    deps |= _get_all_dependencies_of(dep, force=force)
++            for dep in deps:
++                if dep not in get_installed_daps():
++                    installed += install_dap(dep, first=False)
+ 
+     dap_obj.extract(_dir)
+     if will_uninstall:
+@@ -407,7 +408,7 @@ def _get_api_dependencies_of(name, version='', force=False):
+             format(name))
+     return d.get('dependencies', [])
+ 
+-def install_dap(name, version='', update=False, first=True, force=False):
++def install_dap(name, version='', update=False, first=True, force=False, nodeps=False):
+     '''Install a dap from dapi
+     If update is True, it will remove previously installed daps of the same name'''
+     m, d = _get_metadap_dap(name, version)
+@@ -420,7 +421,7 @@ def install_dap(name, version='', update=False, first=True, force=False):
+             return []
+     path, remove_dir = download_dap(name, d=d)
+ 
+-    ret = install_dap_from_path(path, update=update, first=first, force=force)
++    ret = install_dap_from_path(path, update=update, first=first, force=force, nodeps=nodeps)
+ 
+     try:
+         if remove_dir:
+diff --git a/test/dapi/test_dapicli.py b/test/dapi/test_dapicli.py
+index 291055a..ceebf7d 100644
+--- a/test/dapi/test_dapicli.py
++++ b/test/dapi/test_dapicli.py
+@@ -6,6 +6,7 @@ import sys
+ import yaml
+ from flexmock import flexmock
+ 
++from devassistant import dapi
+ from devassistant.dapi import dapicli
+ 
+ 
+@@ -112,6 +113,22 @@ results:
+         assert s('foo <=1 ') == 'foo'
+         assert s('foo<=1') == 'foo'
+ 
++    def test_install_from_path_nodeps(self):
++        # Functional mocks
++        fakedap = flexmock(meta={'package_name': 'foo', 'version': '1.0', 'dependencies': ['bar-1.0']}, \
++                           check=lambda: True, extract=lambda x: None)
++        flexmock(dapi.Dap).new_instances(fakedap)
++        flexmock(dapicli).should_receive('get_installed_daps').and_return([])
++        flexmock(dapicli).should_receive('_install_path').and_return('.')
++        flexmock(dapicli).should_call('install_dap').with_args('bar').never()
++
++        # Filtering off details
++        flexmock(os).should_receive('mkdir').and_return()
++        flexmock(os).should_receive('rename').and_return()
++
++        dapicli.install_dap_from_path('/foo', nodeps=True)
++
++
+ class TestUninstall(object):
+ 
+     def setup_class(self):
+-- 
+2.1.0
+
