@@ -2,4 +2,4 @@
 
 %assistant_path %{_datadir}/devassistant
 
-%install_assistant() DAPI_INSTALL=%{buildroot}%{assistant_path} %{__python3} ./da.py pkg install %{SOURCE0}
+%install_assistant() DAPI_INSTALL=%{buildroot}%{assistant_path}\ da\ pkg\ install\ %{shortname}-%{version}.dap --no-deps

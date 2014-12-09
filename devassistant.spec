@@ -103,6 +103,8 @@ GUI is provided by the package devassistant-gui.
 
 %package devel
 Summary:        Macros needed for DAP packages distributed via RPM.
+# CLI needed for installing and linting
+Requires:       devassistant-cli
 
 %description devel
 Macros needed for DAP packages distributed via RPM.
