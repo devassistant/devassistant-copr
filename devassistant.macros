@@ -3,3 +3,10 @@
 %assistant_path %{_datadir}/devassistant
 
 %install_assistant() DAPI_INSTALL=%{buildroot}%{assistant_path}\ da\ pkg\ install\ %{shortname}-%{version}.dap --no-deps
+
+%repack_assistant() \
+tar czf ../%{shortname}-%{version}.dap ../%{shortname}-%{version} \
+mv ../%{shortname}-%{version}.dap .
+
+%check_assistant() da pkg lint -w %{shortname}-%{version}.dap
+
