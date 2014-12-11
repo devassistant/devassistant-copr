@@ -1,0 +1,80 @@
+From a9079f6480ecb9b98b5656706951fc56abbd5691 Mon Sep 17 00:00:00 2001
+From: Slavek Kabrda <bkabrda@redhat.com>
+Date: Wed, 10 Dec 2014 15:53:20 +0100
+Subject: [PATCH] Fix parser info message when no assistants are available
+
+---
+ devassistant/cli/argparse_generator.py    |  4 +---
+ devassistant/cli/devassistant_argparse.py | 29 +++++++++++++++--------------
+ 2 files changed, 16 insertions(+), 17 deletions(-)
+
+diff --git a/devassistant/cli/argparse_generator.py b/devassistant/cli/argparse_generator.py
+index f2118d7..61fe809 100644
+--- a/devassistant/cli/argparse_generator.py
++++ b/devassistant/cli/argparse_generator.py
+@@ -8,8 +8,6 @@
+ class ArgparseGenerator(object):
+     subparsers_str = 'subassistants'
+     subparsers_desc = '''Following subassistants will help you with setting up your project.'''
+-    subparsers_no_avail = 'No subasistants are available. Please install ' +\
+-        '"assistants" package first.'
+     subactions_str = 'subactions'
+     subactions_desc = 'This action has following subactions.'
+ 
+@@ -87,7 +85,7 @@ def add_subassistants_to(cls, parser, assistant_tuple, level, alias=None):
+             subparsers = cls._add_subparsers_required(p,
+                 dest=settings.SUBASSISTANT_N_STRING.format(level),
+                 title=cls.subparsers_str,
+-                description=cls.subparsers_no_avail)
++                description=devassistant_argparse.ArgumentParser.no_assistants_msg)
+ 
+     @classmethod
+     def add_action_to(cls, parser, action, subactions, level):
+diff --git a/devassistant/cli/devassistant_argparse.py b/devassistant/cli/devassistant_argparse.py
+index 2ca1e43..dd84dc6 100644
+--- a/devassistant/cli/devassistant_argparse.py
++++ b/devassistant/cli/devassistant_argparse.py
+@@ -7,8 +7,21 @@
+ from devassistant import settings
+ from devassistant.actions import HelpAction
+ 
+-
+ class ArgumentParser(argparse.ArgumentParser):
++    no_assistants_msg = '\n'.join([
++        'No subassistants available.',
++        '',
++        'To search DevAssistant Package Index (DAPI) for new assistants,',
++        'you can either browse https://dapi.devassistant.org/ or run',
++        '',
++        '"da pkg search <term>".',
++        '',
++        'Then you can run',
++        '',
++        '"da pkg install <DAP-name>"',
++        '',
++        'to install the desired DevAssistant package (DAP).\n'])
++
+     def __init__(self, *args, **kwargs):
+         super(ArgumentParser, self).__init__(*args, **kwargs)
+ 
+@@ -34,19 +47,7 @@ def _bad_subassistant_error(self, message):
+         for action in self._get_positional_actions():
+             if isinstance(action, argparse._SubParsersAction):
+                 if message == _('too few arguments') and len(action.choices) == 0:
+-                    msg = ['No subassistants available.',
+-                        '',
+-                        'To search DevAssistant Package Index (DAPI) for new assistants,',
+-                        'you can either browse https://dapi.devassistant.org/ or run',
+-                        '',
+-                        '"da pkg search <term>".',
+-                        '',
+-                        'Then you can run',
+-                        '',
+-                        '"da pkg install <DAP-name>"',
+-                        '',
+-                        'to install the desired DevAssistant package (DAP).\n']
+-                    self.exit(2, _('\n'.join(msg)))
++                    self.exit(2, _(self.no_assistants_msg))
+                 else:
+                     self.print_usage(sys.stderr)
+                     prog = getattr(action, '_prog_prefix', 'crt').split()[0]
