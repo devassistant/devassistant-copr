@@ -5,7 +5,7 @@
 
 Name:           devassistant
 Version:        0.10.1
-Release:        1%{?dist}
+Release:        2%{?dist}
 Summary:        DevAssistant - Making life easier for developers
 
 License:        GPLv2+ and CC-BY-SA
@@ -42,6 +42,20 @@ BuildRequires:  python3-docker-py
 Requires:       %{name}-core = %{version}-%{release}
 Requires:       %{name}-gui = %{version}-%{release}
 Requires:       %{name}-cli = %{version}-%{release}
+
+# Assistant packages
+Requires:       dap-c
+Requires:       dap-cpp
+Requires:       dap-custom
+Requires:       dap-dap
+Requires:       dap-github
+Requires:       dap-java
+Requires:       dap-nodejs
+Requires:       dap-perl
+Requires:       dap-php
+Requires:       dap-python
+Requires:       dap-ruby
+Requires:       dap-tito
 
 %global __requires_exclude ^\(/usr/bin/php\|/usr/bin/perl\|perl\\(\)
 
@@ -219,6 +233,9 @@ fi
 %{macrosdir}/macros.%{name}
 
 %changelog
+* Wed Dec 10 2014 Tomas Radej <tradej@redhat.com> - 0.10.1-2
+- Main package depends on DAPs
+
 * Mon Dec 08 2014 Tomas Radej <tradej@redhat.com> - 0.10.1-1
 - Updated to latest upstream version
 - Conditional dependency on python3-docker-py
