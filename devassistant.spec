@@ -5,7 +5,7 @@
 
 Name:           devassistant
 Version:        0.10.1
-Release:        3%{?dist}
+Release:        4%{?dist}
 Summary:        DevAssistant - Making life easier for developers
 
 License:        GPLv2+ and CC-BY-SA
@@ -23,6 +23,7 @@ Patch0:         %{name}-test.patch
 Patch1:         %{name}-pkg-install.patch
 Patch2:         %{name}-fix-error-msgs-with-assistant-aliases.patch
 Patch3:         %{name}-fix-info-when-no-assistants-available.patch
+Patch4:         %{name}-indexing-iterator.patch
 
 BuildArch:      noarch
 
@@ -131,6 +132,7 @@ Macros needed for DAP packages distributed via RPM.
 %patch1 -p1
 %patch2 -p1
 %patch3 -p1
+%patch4 -p1
 # remove bundled egg-info
 rm -rf %{name}.egg-info
 
@@ -237,6 +239,9 @@ fi
 %{macrosdir}/macros.%{name}
 
 %changelog
+* Thu Dec 11 2014 Tomas Radej <tradej@redhat.com> - 0.10.1-4
+- Added upstream patch fixing indexing of an iterator
+
 * Thu Dec 11 2014 Slavek Kabrda <bkabrda@redhat.com> - 0.10.1-3
 - Add two upstream patches fixing some user messages.
 

@@ -1,0 +1,25 @@
+From 64ec8c335039e6e986835e54c6ae700c2afb658f Mon Sep 17 00:00:00 2001
+From: Tomas Radej <tradej@redhat.com>
+Date: Thu, 11 Dec 2014 17:39:35 +0100
+Subject: [PATCH] Fixed indexing of iterator in arg list
+
+---
+ devassistant/yaml_checker.py | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/devassistant/yaml_checker.py b/devassistant/yaml_checker.py
+index 727ce4c..a083ef3 100644
+--- a/devassistant/yaml_checker.py
++++ b/devassistant/yaml_checker.py
+@@ -92,7 +92,7 @@ class YamlChecker(object):
+         else: # must be list - already asserted struct type
+             for argdict in args:
+                 self._assert_command_dict(argdict, '[list-item]', path)
+-                argn, argattrs = argdict.items()[0] # safe - length asserted on previous line
++                argn, argattrs = list(argdict.items())[0] # safe - length asserted on previous line
+                 self._check_one_arg(path, argn, argattrs)
+ 
+ 
+-- 
+2.1.0
+
