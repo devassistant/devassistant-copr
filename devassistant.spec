@@ -5,7 +5,7 @@
 
 Name:           devassistant
 Version:        0.10.1
-Release:        4%{?dist}
+Release:        5%{?dist}
 Summary:        DevAssistant - Making life easier for developers
 
 License:        GPLv2+ and CC-BY-SA
@@ -147,7 +147,9 @@ find -name '*.py' | xargs sed -i '1s,^#!\(/usr/bin/\|/usr/bin/env \)python,#!%{_
 %{__python3} setup.py install --skip-build --root %{buildroot}
 
 # folder for assistants
-mkdir -p %{buildroot}%{_datadir}/%{name}
+mkdir -p %{buildroot}%{_datadir}/%{name}/{assistants,files,icons,meta,snippets,doc}
+mkdir -p %{buildroot}%{_datadir}/%{name}/{assistants,files,icons}/{crt,twk,prep,extra}
+mkdir -p %{buildroot}%{_datadir}/%{name}/files/snippets
 
 # manpages
 mkdir -p %{buildroot}%{_mandir}/man1
@@ -239,6 +241,9 @@ fi
 %{macrosdir}/macros.%{name}
 
 %changelog
+* Mon Dec 15 2014 Tomas Radej <tradej@redhat.com> - 0.10.1-5
+- Corrected ownership of assistants directories
+
 * Thu Dec 11 2014 Tomas Radej <tradej@redhat.com> - 0.10.1-4
 - Added upstream patch fixing indexing of an iterator
 
