@@ -5,7 +5,7 @@
 
 Name:           devassistant
 Version:        0.10.1
-Release:        5%{?dist}
+Release:        6%{?dist}
 Summary:        DevAssistant - Making life easier for developers
 
 License:        GPLv2+ and CC-BY-SA
@@ -122,6 +122,7 @@ GUI is provided by the package devassistant-gui.
 Summary:        Macros needed for DAP packages distributed via RPM.
 # CLI needed for installing and linting
 Requires:       devassistant-cli
+Requires:       dap2rpm
 
 %description devel
 Macros needed for DAP packages distributed via RPM.
@@ -241,6 +242,10 @@ fi
 %{macrosdir}/macros.%{name}
 
 %changelog
+* Wed Jan 14 2015 Tomas Radej <tradej@redhat.com> - 0.10.1-6
+- Added dependency on dap2rpm for devel macros
+- %install_assistant now stores list of files in dap-files
+
 * Mon Dec 15 2014 Tomas Radej <tradej@redhat.com> - 0.10.1-5
 - Corrected ownership of assistants directories
 
