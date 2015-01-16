@@ -4,7 +4,7 @@
 
 %install_assistant() \
 DAPI_INSTALL=%{buildroot}%{assistant_path} da pkg install %{shortname}-%{version}.dap --no-deps \
-dap2rpm -l %{_builddir}/%{shortname}-%{version}/%{shortname}-%{version}.dap > dap-files
+dap2rpm -l %{shortname}-%{version}.dap > dap-files
 
 
 %repack_assistant() \

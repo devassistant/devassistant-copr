@@ -5,7 +5,7 @@
 
 Name:           devassistant
 Version:        0.10.1
-Release:        6%{?dist}
+Release:        7%{?dist}
 Summary:        DevAssistant - Making life easier for developers
 
 License:        GPLv2+ and CC-BY-SA
@@ -242,6 +242,9 @@ fi
 %{macrosdir}/macros.%{name}
 
 %changelog
+* Fri Jan 16 2015 Tomas Radej <tradej@redhat.com> - 0.10.1-7
+- Fixed %install_assistant macro
+
 * Wed Jan 14 2015 Tomas Radej <tradej@redhat.com> - 0.10.1-6
 - Added dependency on dap2rpm for devel macros
 - %install_assistant now stores list of files in dap-files
