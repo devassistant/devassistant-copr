@@ -5,7 +5,7 @@
 
 Name:           devassistant
 Version:        0.10.1
-Release:        7%{?dist}
+Release:        8%{?dist}
 Summary:        DevAssistant - Making life easier for developers
 
 License:        GPLv2+ and CC-BY-SA
@@ -47,18 +47,18 @@ Requires:       %{name}-gui = %{version}-%{release}
 Requires:       %{name}-cli = %{version}-%{release}
 
 # Assistant packages
-Requires:       dap-c
-Requires:       dap-cpp
-Requires:       dap-custom
-Requires:       dap-dap
-Requires:       dap-github
-Requires:       dap-java
-Requires:       dap-nodejs
-Requires:       dap-perl
-Requires:       dap-php
-Requires:       dap-python
-Requires:       dap-ruby
-Requires:       dap-tito
+Requires:       devassistant-dap-c
+Requires:       devassistant-dap-cpp
+Requires:       devassistant-dap-custom
+Requires:       devassistant-dap-dap
+Requires:       devassistant-dap-github
+Requires:       devassistant-dap-java
+Requires:       devassistant-dap-nodejs
+Requires:       devassistant-dap-perl
+Requires:       devassistant-dap-php
+Requires:       devassistant-dap-python
+Requires:       devassistant-dap-ruby
+Requires:       devassistant-dap-tito
 
 %global __requires_exclude ^\(/usr/bin/php\|/usr/bin/perl\|perl\\(\)
 
@@ -242,6 +242,9 @@ fi
 %{macrosdir}/macros.%{name}
 
 %changelog
+* Thu Jan 22 2015 Tomas Radej <tradej@redhat.com> - 0.10.1-8
+- Requires new DAP names
+
 * Fri Jan 16 2015 Tomas Radej <tradej@redhat.com> - 0.10.1-7
 - Fixed %install_assistant macro
 
